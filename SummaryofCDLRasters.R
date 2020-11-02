@@ -18,4 +18,4 @@ for(FocalRaster1 in AllFocalRasters1){
   gc()
 }
 
-View(SummaryTable)
+write.csv(SummaryTable, "E:\\FireflyAnalysis_October2020\\analysis code\\FireflyWatchAnalyses\\SummaryTable.csv")
