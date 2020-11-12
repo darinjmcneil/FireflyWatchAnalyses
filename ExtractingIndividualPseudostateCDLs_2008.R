@@ -47,15 +47,34 @@ plot(pseudostates1$geometry, add = TRUE) # they look good!
 
 # first I need a list of all the states in the FFwatch Dataset
 
-print(unique(pseudostates1$StateName)) # looks good
-FocalStateNames <- unique(unique(pseudostates1$StateName)) # looks good
+print(unique(pseudostates1$StateName)) # looks good but has extra states in the west
+
+FocalStateNames <- unique(unique(pseudostates1$StateName)) # all states
+FocalStateNames <- data.frame(FocalStateNames) # convert to data frame
+names(FocalStateNames) <- "StateName" # name column header
+
+# get rid of states outside the study
+FocalStateNames1 <- FocalStateNames[!(FocalStateNames$StateName == "Wyoming" |
+                                       FocalStateNames$StateName == "Washington" |
+                                       FocalStateNames$StateName == "Utah" |
+                                       FocalStateNames$StateName == "New Mexico" |
+                                       FocalStateNames$StateName == "Nevada" |
+                                       FocalStateNames$StateName == "Idaho" |
+                                       FocalStateNames$StateName == "Hawaii" | 
+                                       FocalStateNames$StateName == "Colorado" |
+                                       FocalStateNames$StateName == "California" |
+                                       FocalStateNames$StateName == "Arizona" |
+                                       FocalStateNames$StateName == "Oregon" |
+                                       FocalStateNames$StateName == "Montana"),]
+
+# View(FocalStateNames1) # looks good
 
 # Ok now we are ready to construct the actual for() loop
 
 CDLraster <- cdl_2008
 year <- 2008
 
-for(PseudostateName in FocalStateNames){
+for(PseudostateName in FocalStateNames1){
   
   #PseudostateName <- "West Virginia" # for troubleshooting purposes
   
@@ -70,6 +89,7 @@ for(PseudostateName in FocalStateNames){
   # plot(StateOutput) # for troubleshooting purposes
 
 }
+
 
 ##########################################################################################
 
