@@ -33,10 +33,11 @@ PseudostateNames$state_alpha <- state_alpha
 ######################################################
 
 ReclassTableDir1 <-("E:\\FireflyAnalysis_October2020\\insecticide_reclass_table") # location of 'big' reclass table
+PseudostateNamesList <- PseudostateNames$ID
 
-for(ID in PseudostateNames){
+for(ID in PseudostateNamesList){
  
-   # ID <- "East Texas" # for troubleshooting
+  # ID <- "East Texas" # for troubleshooting
   
   # create and export the subsetted reclass table
   FocalYear = "2008"
@@ -64,12 +65,15 @@ for(ID in PseudostateNames){
     check_pesttable = F # leave useW, and rastertag as default
   )
   
-  SpeedyBeeOutput <- raster(paste0(FocalOutputDIr, "\\CDL_2008_East Texas_insecticide.tif"))
-  plot(SpeedyBeeOutput)
+  # mapping for troubleshooting purposes
+  # SpeedyBeeOutput <- raster(paste0(FocalOutputDIr, "\\CDL_2008_East Texas_insecticide.tif"))
+  # plot(SpeedyBeeOutput)
   
 }
 
-
+for(ID in PseudostateNamesList){
+  print(ID)
+}
 
 
 ################### scrap
