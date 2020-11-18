@@ -71,43 +71,11 @@ for(ID in PseudostateNamesList){
   
 }
 
-for(ID in PseudostateNamesList){
-  print(ID)
-}
-
-
-################### scrap
-
-# FocalYear = "2008"
-# subset reclass table for focal pseudostate
-# PseudostateID <- "East Texas"
-# PseudostateAlpha <- PseudostateNames[PseudostateNames$ID == PseudostateID, 2]
-# FocalPseudostate_ReclassTable <- subset(ReclassTable1, state_alpha == PseudostateAlpha & year == FocalYear)
-
-# export the subsetted reclass table
-# write.csv(FocalPseudostate_ReclassTable, paste0(ReclassTableDir1, "\\", PseudostateID, FocalYear, ".csv"))
-
-# define path to CDL raster file
-# focal_cdl2008path <- paste0("E:\\FireflyAnalysis_October2020\\CDL_individual_pseudostates\\2008\\CDL_2008_", PseudostateID, ".tif")
-# plot(raster(focal_cdl2008path))
-
-#####################################################
-# convert the CDL to pest map by the subsetted table (via SpeedyBeeModel)
-#####################################################
-
-SpeedyBeeModel::insecticide_index(
-  output_dir = "E:\\FireflyAnalysis_October2020\\individual_pesticide_maps\\2008\\MN2008", # output loc
-  pesticide_path = paste0(ReclassTableDir1, "\\MN2008.csv"), # path to pesticide FILTERED reclass table
-  landcover_path = MN_cdl2008path, # path to each landcover CDL map
-  forage_range = 500, # range in meters
-  guild_table = NA, # No define guild table - not running multi-species stuff
-  ins_method = "mean", # mean is default; could do oral/contact or whatev
-  agg_factor = NA,
-  normalize = F,
-  check_pesttable = F # leave useW, and rastertag as default
-)
-
 # Did it work??
 
-MN2008map <- raster("E:\\FireflyAnalysis_October2020\\individual_pesticide_maps\\2008\\MN2008\\CDL_2008_Minnesota_insecticide.tif")
-plot(MN2008map)
+list.files("E:\\FireflyAnalysis_October2020\\individual_pesticide_maps\\2008") # seems like it worked??
+
+# plot one for practice
+NorthMN2008map <- raster("E:\\FireflyAnalysis_October2020\\individual_pesticide_maps\\2008\\North Minnesota_SpeedyBee_2008\\CDL_2008_North Minnesota_insecticide.tif")
+plot(NorthMN2008map)
+summary(NorthMN2008map) # does this need to have NAs?
