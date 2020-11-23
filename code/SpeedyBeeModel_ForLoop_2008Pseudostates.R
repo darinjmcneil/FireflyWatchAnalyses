@@ -78,4 +78,26 @@ list.files("E:\\FireflyAnalysis_October2020\\individual_pesticide_maps\\2008") #
 # plot one for practice
 NorthMN2008map <- raster("E:\\FireflyAnalysis_October2020\\individual_pesticide_maps\\2008\\North Minnesota_SpeedyBee_2008\\CDL_2008_North Minnesota_insecticide.tif")
 plot(NorthMN2008map)
-summary(NorthMN2008map) # does this need to have NAs?
+
+## Working on combining them
+
+SouthMN2008map <- raster("E:\\FireflyAnalysis_October2020\\individual_pesticide_maps\\2008\\South Minnesota_SpeedyBee_2008\\CDL_2008_South Minnesota_insecticide.tif")
+plot(SouthMN2008map)
+
+AllMN2008map <- raster::mosaic(NorthMN2008map, SouthMN2008map, fun = sum)
+plot(AllMN2008map)
+
+library(sf)
+us_states1 <- st_read("E:\\FireflyAnalysis_October2020\\states\\us_states.shp") #  read shapefile of US states
+us_states1 <- sf::st_transform(us_states1, crs = crs(AllMN2008map))
+plot(us_states1$geometry, add = TRUE)
+
+NorthMI2008map <- raster("E:\\FireflyAnalysis_October2020\\individual_pesticide_maps\\2008\\North Michigan_SpeedyBee_2008\\CDL_2008_North Michigan_insecticide.tif")
+SouthMI2008map <- raster("E:\\FireflyAnalysis_October2020\\individual_pesticide_maps\\2008\\South Michigan_SpeedyBee_2008\\CDL_2008_South Michigan_insecticide.tif")
+WI2008map <- raster("E:\\FireflyAnalysis_October2020\\individual_pesticide_maps\\2008\\Wisconsin_SpeedyBee_2008\\CDL_2008_Wisconsin_insecticide.tif")
+
+AllGreatLakes2008map <- raster::mosaic(AllMN2008map, NorthMI2008map, fun = sum) # add UP
+AllGreatLakes2008map <- raster::mosaic(AllGreatLakes2008map, SouthMI2008map, fun = sum) # add LP
+AllGreatLakes2008map <- raster::mosaic(AllGreatLakes2008map, WI2008map, fun = sum) # add WI
+plot(AllGreatLakes2008map)
+plot(us_states1$geometry, add = TRUE) 
