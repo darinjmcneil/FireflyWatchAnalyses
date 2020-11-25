@@ -2,11 +2,7 @@
 # install_github("land-4-bees/SpeedyBeeModel")
 # install.packages("logger")
 # install.packages("tidyr")
-library(logger)
-library(tidyr)
-library(SpeedyBeeModel)
-library(raster)
-library(devtools)
+library(logger); library(tidyr); library(SpeedyBeeModel); library(raster); library(devtools)
 
 # read in the reclass table
 ReclassTableDir1 <-("E:\\FireflyAnalysis_October2020\\insecticide_reclass_table") # location of reclass table
@@ -75,29 +71,48 @@ for(ID in PseudostateNamesList){
 
 list.files("E:\\FireflyAnalysis_October2020\\individual_pesticide_maps\\2008") # seems like it worked??
 
-# plot one for practice
+# plot one to see how it looks
 NorthMN2008map <- raster("E:\\FireflyAnalysis_October2020\\individual_pesticide_maps\\2008\\North Minnesota_SpeedyBee_2008\\CDL_2008_North Minnesota_insecticide.tif")
-plot(NorthMN2008map)
+plot(NorthMN2008map) # looks good!
 
-## Working on combining them
+##########################################################################
+#
+#
+# NOTE - CODE BELOW THIS POINT WAS FOR COMBINING FILES INTO A SINGLE MAP
+# HOWEVER I BELIEVE THIS IS NOT NECESSARY SO THIS CODE CAN BE IGNORED
+#
+#
+##########################################################################
 
-SouthMN2008map <- raster("E:\\FireflyAnalysis_October2020\\individual_pesticide_maps\\2008\\South Minnesota_SpeedyBee_2008\\CDL_2008_South Minnesota_insecticide.tif")
-plot(SouthMN2008map)
+list.files("E:\\FireflyAnalysis_October2020\\individual_pesticide_maps\\2008") # seems like it worked??
 
-AllMN2008map <- raster::mosaic(NorthMN2008map, SouthMN2008map, fun = sum)
-plot(AllMN2008map)
+# we can leverage the above "PseudostateNamesList" to open these and stitch them together
 
-library(sf)
-us_states1 <- st_read("E:\\FireflyAnalysis_October2020\\states\\us_states.shp") #  read shapefile of US states
-us_states1 <- sf::st_transform(us_states1, crs = crs(AllMN2008map))
-plot(us_states1$geometry, add = TRUE)
+#########################
 
-NorthMI2008map <- raster("E:\\FireflyAnalysis_October2020\\individual_pesticide_maps\\2008\\North Michigan_SpeedyBee_2008\\CDL_2008_North Michigan_insecticide.tif")
-SouthMI2008map <- raster("E:\\FireflyAnalysis_October2020\\individual_pesticide_maps\\2008\\South Michigan_SpeedyBee_2008\\CDL_2008_South Michigan_insecticide.tif")
-WI2008map <- raster("E:\\FireflyAnalysis_October2020\\individual_pesticide_maps\\2008\\Wisconsin_SpeedyBee_2008\\CDL_2008_Wisconsin_insecticide.tif")
+# Actually I might need to break this into chunks. Here are some chunks:
 
-AllGreatLakes2008map <- raster::mosaic(AllMN2008map, NorthMI2008map, fun = sum) # add UP
-AllGreatLakes2008map <- raster::mosaic(AllGreatLakes2008map, SouthMI2008map, fun = sum) # add LP
-AllGreatLakes2008map <- raster::mosaic(AllGreatLakes2008map, WI2008map, fun = sum) # add WI
-plot(AllGreatLakes2008map)
-plot(us_states1$geometry, add = TRUE) 
+texaschunk <- c('Northeast Texas', 'North Texas', 'Northcentral Texas', 'Northwest Texas', 'East Texas', 'Central Texas', 'South Texas', 'Southcentral Texas', 'Southeast Texas', 'Southwest Texas')
+midwestchunk <- c('North Minnesota', 'South Minnesota', 'Wisconsin', 'North Michigan', 'South Michigan', 'Illinois', 'Indiana', 'Ohio')
+centralUSchunk <- c('North Dakota', 'South Dakota', 'Nebraska', 'Kansas', 'Oklahoma', 'Iowa', 'Missouri', 'Arkansas', 'Louisiana', 'Alabama', 'Mississippi')
+eastcoastchunk <- c('Tennessee', 'Kentucky', 'North Carolina', 'South Carolina', 'Georgia', 'North Florida', 'South Florida', 'West Virginia', 'Virginia')
+newenglandchunk <- c('Maine', 'Vermont', 'New Hampshire', 'Connecticut', 'Massachusetts', 'Rhode Island', 'New York', 'New Jersey', 'Delaware', 'District of Columbia', 'Pennsylvania') #Maryland is base
+
+
+#################
+# for loop - New England Chunk
+
+# make one map to start the loop
+compiledmap1 <- raster("E:\\FireflyAnalysis_October2020\\individual_pesticide_maps\\2008\\Maryland_SpeedyBee_2008\\CDL_2008_Maryland_insecticide.tif")
+plot(compiledmap1)
+
+for(ID in newenglandchunk){
+  # identify the file
+  # ID <- "Pennsylvania"
+  rasterpath1 <- paste0("E:\\FireflyAnalysis_October2020\\individual_pesticide_maps\\2008\\", ID, "_SpeedyBee_2008\\CDL_2008_", ID, "_insecticide.tif")
+  newraster1 <- raster(rasterpath1)
+  compiledmap1 <- raster::mosaic(compiledmap1, newraster1, fun = sum) # add new raster to larger raster
+}
+# export
+writeRaster(compiledmap1, "E:\\FireflyAnalysis_October2020\\regional_pesticide_maps\\NewEnglandChunk2008insecticides.tif")
+
