@@ -19,14 +19,14 @@ library(raster)
 # opening and mapping CDL
 # qGIS calles the .img extension "Disc Image File"
 
-cdl_2009 <- raster("E:\\FireflyAnalysis_October2020\\CDL_rasters\\2009_30m_cdls\\2009_30m_cdls.img")
-crs(cdl_2009)
+cdl_2010 <- raster("E:\\FireflyAnalysis_October2020\\CDL_rasters\\2010_30m_cdls\\2010_30m_cdls.img")
+crs(cdl_2010)
 
 # CRS arguments:
 #  +proj=aea +lat_0=23 +lon_0=-96 +lat_1=29.5 +lat_2=45.5 +x_0=0 +y_0=0 +ellps=WGS84 +towgs84=0,0,0,0,0,0,0
 #  +units=m +no_defs 
 
-plot(cdl_2009, main="CDL 2009") # this mapped super fast 
+plot(cdl_2010, main="CDL 2010") # this mapped super fast 
 
 # Ok now time to add the state boundaries
 
@@ -36,9 +36,9 @@ pseudostates1 <- st_read("E:\\FireflyAnalysis_October2020\\analysis code\\Firefl
 # us_states1 <- st_read("E:\\FireflyAnalysis_October2020\\states\\us_states.shp") #  read shapefile of US states
 
 # reproject the shapefile to match the CDL raster
-pseudostates1 <- sf::st_transform(pseudostates1, crs = crs(cdl_2009))
+pseudostates1 <- sf::st_transform(pseudostates1, crs = crs(cdl_2010))
 
-plot(cdl_2009)
+plot(cdl_2010)
 plot(pseudostates1$geometry, add = TRUE) # they look good!
 
 ##################
@@ -71,8 +71,8 @@ FocalStateNames1 <- FocalStateNames[!(FocalStateNames$StateName == "Wyoming" |
 
 # Ok now we are ready to construct the actual for() loop
 
-CDLraster <- cdl_2009
-year <- 2009
+CDLraster <- cdl_2010
+year <- 2010
 
 for(PseudostateName in FocalStateNames1){
   
@@ -81,7 +81,7 @@ for(PseudostateName in FocalStateNames1){
   StateBoundary <- subset(pseudostates1, StateName == PseudostateName) # extract state boundary polygon
   CroppedCDL <- crop(CDLraster, StateBoundary) # crop CDL using state boundary polygon
   MaskedCDL <- raster::mask(CroppedCDL, StateBoundary) # mask cropped CDL using state bounds
-  PathToFolder <- ("E:\\FireflyAnalysis_October2020\\CDL_individual_pseudostates\\2009\\") # this needs to be tweaked for each year
+  PathToFolder <- ("E:\\FireflyAnalysis_October2020\\CDL_individual_pseudostates\\2010\\") # this needs to be tweaked for each year
   TifName <- paste0("CDL_", year, "_", PseudostateName, ".tif")
   writeRaster(MaskedCDL, paste0(PathToFolder, TifName))
   
