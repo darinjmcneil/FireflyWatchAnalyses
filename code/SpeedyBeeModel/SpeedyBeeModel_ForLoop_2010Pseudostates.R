@@ -6,11 +6,11 @@ ReclassTablePath1 <- paste0(ReclassTableDir1, "\\beetox_I_cdl_reclass_20200717.c
 ReclassTable1 <- read.csv(ReclassTablePath1) # read in reclass table
 
 # generate list of pseudostates
-PathToCDLRasters <- "E:\\FireflyAnalysis_October2020\\CDL_individual_pseudostates\\2009"
-PseudostateNames <- data.frame(list.files(PathToCDLRasters, pattern = "\\.tif$")) # read all the files for 2009
+PathToCDLRasters <- "E:\\FireflyAnalysis_October2020\\CDL_individual_pseudostates\\2010"
+PseudostateNames <- data.frame(list.files(PathToCDLRasters, pattern = "\\.tif$")) # read all the files for 2010
 names(PseudostateNames) <- c("ID") # add column header
 
-PseudostateNames[] <- lapply(PseudostateNames, gsub, pattern = "CDL_2009_", replacement = "", fixed = TRUE) # tidy the names
+PseudostateNames[] <- lapply(PseudostateNames, gsub, pattern = "CDL_2010_", replacement = "", fixed = TRUE) # tidy the names
 PseudostateNames[] <- lapply(PseudostateNames, gsub, pattern = ".tif", replacement = "", fixed = TRUE) # tidy the names
 
 "state_alpha" = c("AL", "AR", "TX", "CT", "DE", "DC", "TX", "GA", "IL", "IN",
@@ -32,17 +32,17 @@ for(PseudostateID in PseudostateNamesList){
   # PseudostateID <- PseudostateNamesList[3]
   
   # create and export the subsetted reclass table
-  FocalYear = "2009"
+  FocalYear = "2010"
   PseudostateAlpha <- PseudostateNames[PseudostateNames$ID == PseudostateID, 2]
   FocalPseudostate_ReclassTable <- subset(ReclassTable1, state_alpha == PseudostateAlpha & year == FocalYear)
   FocalPseudostate_ReclassTable_Path <- paste0(ReclassTableDir1, "\\", PseudostateID, FocalYear, ".csv") # this is where I'll save the new table
   write.csv(FocalPseudostate_ReclassTable, FocalPseudostate_ReclassTable_Path)
   
   # define path to the cropland data layer for focal pseudostate
-  Focal_cdlpath <- paste0("E:\\FireflyAnalysis_October2020\\CDL_individual_pseudostates\\2009\\CDL_2009_", PseudostateID, ".tif")
+  Focal_cdlpath <- paste0("E:\\FireflyAnalysis_October2020\\CDL_individual_pseudostates\\2010\\CDL_2010_", PseudostateID, ".tif")
   
   # define the path where the new pesticide map will go after SpeedyBeeModel is done
-  FocalOutputDIr <- paste0("E:\\FireflyAnalysis_October2020\\individual_pesticide_maps\\2009\\", PseudostateID, "_SpeedyBee_", FocalYear)
+  FocalOutputDIr <- paste0("E:\\FireflyAnalysis_October2020\\individual_pesticide_maps\\2010\\", PseudostateID, "_SpeedyBee_", FocalYear)
   
   # Run the speedy bee model on the focal pseudostate
   SpeedyBeeModel::insecticide_index(
@@ -58,15 +58,15 @@ for(PseudostateID in PseudostateNamesList){
   )
   
   # mapping for troubleshooting purposes
-  # SpeedyBeeOutput <- raster(paste0(FocalOutputDIr, "\\CDL_2009_East Texas_insecticide.tif"))
+  # SpeedyBeeOutput <- raster(paste0(FocalOutputDIr, "\\CDL_2010_East Texas_insecticide.tif"))
   # plot(SpeedyBeeOutput)
   
 }
 
 # Did it work??
 
-list.files("E:\\FireflyAnalysis_October2020\\individual_pesticide_maps\\2009") # seems like it worked??
+list.files("E:\\FireflyAnalysis_October2020\\individual_pesticide_maps\\2010") # seems like it worked??
 
 # plot one to see how it looks
-NorthMN2009map <- raster("E:\\FireflyAnalysis_October2020\\individual_pesticide_maps\\2009\\North Minnesota_SpeedyBee_2009\\CDL_2009_North Minnesota_insecticide.tif")
-plot(NorthMN2009map) # looks good!
+NorthMN2010map <- raster("E:\\FireflyAnalysis_October2020\\individual_pesticide_maps\\2010\\North Minnesota_SpeedyBee_2010\\CDL_2010_North Minnesota_insecticide.tif")
+plot(NorthMN2010map) # looks good!
